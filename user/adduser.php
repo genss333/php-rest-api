@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         );
 
         if ($db->insert('users', $userData)) {
-            $dataUser = $db->query('SELECT * FROM users ORDER BY user_id DESC LIMIT 1');
+            $dataUser = $db->queryCustom('SELECT * FROM users ORDER BY user_id DESC LIMIT 1');
             $user_id = $dataUser[0]['user_id'];
 
             $address = $_POST['address'];

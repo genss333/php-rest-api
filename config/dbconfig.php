@@ -15,7 +15,7 @@ class Database
         $this->pdo->exec("SET NAMES utf8mb4");
     }
 
-    public function query($sql)
+    public function queryCustom($sql)
     {
         try {
             $stmt = $this->pdo->prepare($sql);
@@ -25,6 +25,47 @@ class Database
             throw $e;
         }
     }
+
+    public function query($tableName)
+    {
+        try {
+            $stmt = $this->pdo->prepare('SELECT * FROM' . $tableName);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    function joinTables($arrTable, $joinConditions) {
+        try {
+            $tables = implode(" JOIN ", $arrTable);
+            $joinString = implode(" AND ", $joinConditions);
+    
+            $query = "SELECT * FROM $tables ON $joinString";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw $e;
+        }
+    }
+    
+
+    function joinTablesCondion($arrTable, $joinConditions,$condition) {
+        try {
+            $tables = implode(" JOIN ", $arrTable);
+            $joinString = implode(" ON ", $joinConditions);
+            $query = "SELECT * FROM $tables ON $joinString WHERE $condition";
+    
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw $e;
+        }
+    }
+
 
     public function insert($table, $data)
     {
